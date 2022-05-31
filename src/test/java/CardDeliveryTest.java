@@ -12,13 +12,11 @@ import static com.codeborne.selenide.Selenide.$x;
 import static com.codeborne.selenide.Selenide.open;
 
 public class CardDeliveryTest {
-    private Faker faker;
-
     @BeforeEach
     void setupTest() {
         Configuration.holdBrowserOpen = true;
         open("http://localhost:9999/");
-        faker = new Faker(new Locale("ru"));
+        Faker faker = new Faker(new Locale("ru"));
         $x("//span[@data-test-id='date']//input[@type='tel']").doubleClick().sendKeys(Keys.chord(Keys.BACK_SPACE));
     }
 
@@ -42,28 +40,5 @@ public class CardDeliveryTest {
         $x("//div[@data-test-id='replan-notification']//button").click();
         $x("//div[@class='notification__title']").shouldHave(Condition.text("Успешно"), Duration.ofSeconds(15));
         $x("//div[@class='notification__content']").shouldHave(Condition.text("Встреча успешно запланирована на " + newDateByClient), Duration.ofSeconds(15));
-    }
-
-    @Test
-    void notCorrectPhoneNumberTest() {
-        $x("//span[@data-test-id='city']//input[@type='text']").val(DataGenerator.city());
-        $x("//span[@data-test-id='date']//input[@type='tel']").val(dateByClient);
-        $x("//span[@data-test-id='name']//input[@type='text']").val(DataGenerator.surNameAndFirstName());
-        $x("//span[@data-test-id='phone']//input[@type='tel']").val(DataGenerator.notCorrectPhone());
-        $x("//label[@data-test-id='agreement']").click();
-        $x("//span[@class='button__text']").click();
-        $x("//span[@data-test-id='phone']").shouldHave(Condition.text("Имя и Фамилия указаные неверно. Допустимы только русские буквы, пробелы и дефисы."));
-
-    }
-
-    @Test
-    void notWorkingNameTest() {
-        $x("//span[@data-test-id='city']//input[@type='text']").val(DataGenerator.city());
-        $x("//span[@data-test-id='date']//input[@type='tel']").val(dateByClient);
-        $x("//span[@data-test-id='name']//input[@type='text']").val(DataGenerator.notWorkingName());
-        $x("//span[@data-test-id='phone']//input[@type='tel']").val(DataGenerator.phone());
-        $x("//label[@data-test-id='agreement']").click();
-        $x("//span[@class='button__text']").click();
-        $x("//div[@class='notification__title']").shouldHave(Condition.text("Успешно"), Duration.ofSeconds(15));
     }
 }
